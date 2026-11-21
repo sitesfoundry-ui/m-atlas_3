@@ -1,0 +1,6 @@
+@import "@fontsource-variable/inter/wght.css";
+@import "tailwindcss";
+@import "./styles/tokens.css";
+@import "./styles/base.css";
+@import "./features/atlas/atlas.css";
+@import "./components/shell/bigFooter.css";

@@ -1,0 +1,114 @@
+:root {
+  --ease: cubic-bezier(.22, .8, .24, 1);
+  --font-inter: "Inter Variable", "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+.hero[data-volume="birds"] {
+  --bg: #f6f1e7;
+  --panel: #fbf8f1;
+  --line: #e7e0d1;
+  --ink: #1b1a17;
+  --muted: #6d685d;
+  --accent: #4d5a3d;
+  --accent-ink: #ffffff;
+  --accent-tint: #e9ebdc;
+  --chip: #efeadd;
+  --shadow: 60, 48, 28;
+  --serif: "Newsreader", "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --sans: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+}
+
+.hero[data-volume="birds"][data-light="dusk"] {
+  --bg: #14170f;
+  --panel: #1b1f15;
+  --line: #2d3324;
+  --ink: #f2ecdf;
+  --muted: #a8a392;
+  --accent: #a9b98a;
+  --accent-ink: #14170f;
+  --accent-tint: #283020;
+  --chip: #262b1d;
+  --shadow: 0, 0, 0;
+}
+
+.hero[data-volume="myths"] {
+  --bg: #ebe1cd;
+  --panel: #f8f2e6;
+  --line: #d6c9ae;
+  --ink: #241c14;
+  --muted: #7a6b58;
+  --accent: #b4532a;
+  --accent-ink: #ffffff;
+  --accent-tint: #f3dfcd;
+  --chip: #e4d8c2;
+  --shadow: 70, 48, 24;
+  --serif: "Fraunces", "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --sans: "Instrument Sans", "Inter Variable", "Inter", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+
+.hero[data-volume="myths"][data-light="dusk"] {
+  --bg: #17120d;
+  --panel: #211a13;
+  --line: #3d3225;
+  --ink: #f1e7d6;
+  --muted: #a89880;
+  --accent: #e08a4f;
+  --accent-ink: #17120d;
+  --accent-tint: #3b2415;
+  --chip: #2d251b;
+  --shadow: 0, 0, 0;
+}
+
+.site {
+  --bg: #f1eadc;
+  --panel: #f9f5ec;
+  --line: #ddd3bd;
+  --ink: #1f1b14;
+  --muted: #706a5c;
+  --accent: #4d5a3d;
+  --accent-ink: #ffffff;
+  --accent-tint: #e9ebdc;
+  --chip: #ece5d4;
+  --shadow: 60, 48, 28;
+  --accent-birds: #4d5a3d;
+  --accent-myths: #b4532a;
+  --ease: cubic-bezier(.22, .8, .24, 1);
+  --serif: "Newsreader", "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --sans: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+
+  /* Big footer tokens */
+  --f-start: var(--panel);
+  --f-paper: var(--bg);
+  --f-stroke: #ffffff;
+  --f-lines-alpha: 1;
+  --f-ink: var(--ink);
+  --f-ink2: #3b362c;
+  --f-rule: #a79d89;
+  --f-hair: #b8ad98;
+  --f-pill: var(--chip);
+  --f-btn: var(--ink);
+  --f-btn-text: var(--bg);
+}
+
+.site[data-light="dusk"] {
+  --bg: #15140e;
+  --panel: #1c1b14;
+  --line: #302e22;
+  --ink: #f1ebdc;
+  --muted: #a9a38f;
+  --accent: #a9b98a;
+  --accent-ink: #14170f;
+  --accent-tint: #262a1c;
+  --chip: #25241b;
+  --shadow: 0, 0, 0;
+  --accent-birds: #a9b98a;
+  --accent-myths: #e08a4f;
+
+  --f-stroke: #f1ebdc;
+  --f-lines-alpha: .22;
+  --f-ink2: #d6d0be;
+  --f-rule: #5a5645;
+  --f-hair: #6d685d;
+}

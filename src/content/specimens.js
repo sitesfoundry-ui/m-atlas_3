@@ -1,0 +1,108 @@
+const t = (en, mn) => ({ en, mn });
+
+export const specimens = [
+  {
+    id: "hoopoe", volume: "birds", no: "MA-101",
+    latin: "Upupa epops",
+    name: t("Hoopoe", "Хупу шувуу"),
+    family: t("Upupidae", "Upupidae"),
+    image: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261004_073256_21ed095c-d038-4ab5-87b7-b44e527ec449.png",
+    model: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261004_073347_06b339a7-70bc-4ecd-9e72-1a4143264da9.glb",
+    yaw: 0.75, pitch: 0.12,
+    era: [1758, 1758], eraLabel: t("Linnaeus, 1758", "Линней, 1758"), scale: t("10 cm", "10 см"),
+    tags: [t("Ground forager", "Газраас хоол хайгч"), t("Crested", "Сүлдтэй"), t("Migrant", "Нүүдлийн")],
+    lede: t(
+      "Unmistakable in cinnamon, black and white, the hoopoe walks open ground probing for grubs with its long curved bill. It lifts its crest into a fan when it lands or takes fright, and flies on broad wings with a loose, butterfly-like beat.",
+      "Шаргал хүрэн, хар, цагаан өнгийн хослолоороо андуурахын аргагүй хупу шувуу нээлттэй газраар алхаж, урт муруй хошуугаараа авгалдай хайна. Газарт буух эсвэл айх үедээ оройн сүлдээ сэнс шиг дэлгэж, өргөн далавчаа сул, эрвээхэй шиг зөөлөн савчуулан нисдэг."
+    ),
+    traits: [
+      { icon: "t-ruler", key: "length", value: t("25–29 cm", "25–29 см") },
+      { icon: "t-wing", key: "wingspan", value: t("44–48 cm", "44–48 см") },
+      { icon: "t-diet", key: "diet", value: t("Insects, larvae and grubs", "Шавж, авгалдай, хорхой") },
+      { icon: "t-range", key: "range", value: t("Europe, Asia and Africa", "Европ, Ази, Африк") },
+    ],
+    habitat: t("Orchards, vineyards and dry grassland.", "Жимсний цэцэрлэг, усан үзмийн талбай, хуурай тал нутаг."),
+    caption: t("A crown raised, and the orchard takes notice.", "Титэм өргөгдөхөд цэцэрлэг анзаарав."),
+    closeup: t("Every crest feather ends in a black tip, so the raised fan reads like a row of signal flags.", "Сүлдний өд бүр хар үзүүртэй тул өргөсөн сэнс дохионы тугийн эгнээ шиг харагдана."),
+    lens: "62% 22%",
+    feature: { title: t("A crown of cinnamon.", "Шаргал хүрэн титэм."), text: t("Bold bars on broad wings. A call you hear before you see it.", "Өргөн далавч дээрх тод судал. Харахаасаа өмнө сонсогддог дуудлага.") },
+  },
+  {
+    id: "kingfisher", volume: "birds", no: "MA-102",
+    latin: "Alcedo atthis",
+    name: t("Kingfisher", "Загасчин шувуу"),
+    family: t("Alcedinidae", "Alcedinidae"),
+    image: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261004_073256_f9e3e60d-acdc-4925-b393-c4ce14b28711.png",
+    model: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261004_073345_12721630-c589-442f-8884-e4a445cd8980.glb",
+    yaw: 0.75, pitch: 0.12,
+    era: [1758, 1758], eraLabel: t("Linnaeus, 1758", "Линней, 1758"), scale: t("10 cm", "10 см"),
+    tags: [t("River bird", "Голын шувуу"), t("Diver", "Шумбагч"), t("Iridescent", "Солонгорсон")],
+    lede: t(
+      "A small, spectacular bird of rivers and lakes, the kingfisher is renowned for its dazzling plumage and astonishing hunting dives. A master of stealth and speed, it links healthy waterways with extraordinary beauty.",
+      "Гол, нуурын жижиг боловч гайхалтай энэ шувуу гялалзсан өд, гайхмаар агнах шумбалтаараа алдартай. Нууцлаг байдал, хурдны мастер тул цэвэр усан орчныг ер бусын гоо үзэсгэлэнтэй холбон харуулдаг."
+    ),
+    traits: [
+      { icon: "t-ruler", key: "length", value: t("16–17 cm", "16–17 см") },
+      { icon: "t-speed", key: "diveSpeed", value: t("Up to 40 km/h", "Цагт 40 км хүртэл") },
+      { icon: "t-diet", key: "diet", value: t("Small fish and insects", "Бяцхан загас, шавж") },
+      { icon: "t-range", key: "range", value: t("Europe and Asia", "Европ, Ази") },
+    ],
+    habitat: t("Slow rivers, streams and lakes.", "Удаан урсгалтай гол, горхи, нуур."),
+    caption: t("Blink, and the river keeps its secret.", "Анивчихад л гол нууцаа хадгална."),
+    closeup: t("An intricate mosaic of structure and colour gives the kingfisher its unmistakable sheen.", "Бүтэц, өнгийн нарийн мозайк нь загасчин шувууны андуурашгүй гялбааг төрүүлдэг."),
+    lens: "24% 30%",
+    feature: { title: t("A flash of river blue.", "Голын цэнхэрийн гялбаа."), text: t("Extraordinary colours. A remarkable life by the water.", "Ер бусын өнгө. Усны хажуугийн гайхалтай амьдрал.") },
+  },
+  {
+    id: "phoenix", volume: "myths", no: "MA-201",
+    latin: "Phoenix ignis",
+    name: t("Phoenix", "Феникс"),
+    family: t("Fire birds", "Галт шувууд"),
+    image: "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261031_020340_4815bb8d-68c3-48c4-ad05-6307d085e896.png&w=900&q=85",
+    model: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261031_015714_12c0e407-828a-4b1f-957c-2efe1fe83be1.glb",
+    yaw: 3.9, pitch: 0.1,
+    era: [-800, -430], eraLabel: t("Herodotus, 430 BC", "Геродот, МЭӨ 430 он"), scale: t("1 m", "1 м"),
+    tags: [t("Immortal", "Үхэшгүй"), t("Solitary", "Ганцаардмал"), t("Fire-born", "Галаас төрсөн")],
+    lede: t(
+      "A bird the size of an eagle in crimson and gold, said to live five hundred years before building a nest of frankincense and myrrh, setting it alight and rising again from the ash. Herodotus heard the story in Egypt and admitted he did not quite believe it. Every age since has told it anyway.",
+      "Бүргэдийн чинээ, час улаан, алтан өнгийн шувуу. Таван зуун жил амьдраад, хүж, мирра хоёроор үүр засч, түүнийгээ галдан шатааж, үнсээсээ дахин мандан бослоо гэдэг. Геродот үүнийг Египетэд сонсоод, өөрөө бүрэн итгээгүйгээ хүлээн зөвшөөрсөн. Гэсэн ч түүнээс хойш үе бүр энэ түүхийг ярьсаар ирсэн."
+    ),
+    traits: [
+      { icon: "t-wing", key: "wingspan", value: t("4 m", "4 м") },
+      { icon: "t-time", key: "lifespan", value: t("500 years, then again", "500 жил, дараа нь дахин") },
+      { icon: "t-diet", key: "diet", value: t("Frankincense and myrrh", "Хүж, мирра") },
+      { icon: "t-range", key: "reported", value: t("Heliopolis, Egypt", "Гелиополис, Египет") },
+    ],
+    habitat: t("Temple roofs, desert dawns and the pages of Herodotus.", "Сүмийн дээвэр, цөлийн үүр цайх, Геродотын хуудсууд."),
+    caption: t("Burns once a lifetime. Never twice the same.", "Нэг насандаа нэг л шатна. Хоёр удаа адилгүй."),
+    closeup: t("Each tail plume ends in a pale gold tip, the only part said to survive the fire.", "Сүүлний өд бүр цайвар алтан үзүүртэй. Галаас амьд үлддэг цорын ганц хэсэг гэдэг."),
+    lens: "55% 25%",
+    feature: { title: t("A fire you can outlive.", "Даван туулах гал."), text: t("Crimson, gold and patient. The bird that refuses to end.", "Час улаан, алтан, тэвчээртэй. Төгсөхөөс татгалздаг шувуу.") },
+  },
+  {
+    id: "kraken", volume: "myths", no: "MA-202",
+    latin: "Architeuthis mythos",
+    name: t("Kraken", "Кракен"),
+    family: t("Sea monsters", "Далайн мангасууд"),
+    image: "https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261031_020342_3e375b40-2c06-4189-995a-acbc21f06142.png&w=900&q=85",
+    model: "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261031_013537_0dc2c71f-4f11-4a86-ab93-91a59535d5b7.glb",
+    yaw: 0.75, pitch: 0.12,
+    era: [1180, 1752], eraLabel: t("Pontoppidan, 1752", "Понтоппидан, 1752"), scale: t("10 m", "10 м"),
+    tags: [t("Abyssal", "Гүн далайн"), t("Ship-taker", "Хөлөг залгигч"), t("Norse", "Скандинавын")],
+    lede: t(
+      "Norwegian sailors described an island that was not there the day before, then the whirlpool it left when it sank. Bishop Pontoppidan wrote it up in 1752 as the largest creature in the world. The giant squid, hauled up a century later, turned out to be the smaller, truer version of the same story.",
+      "Норвегийн далайчид урд өдөр нь байгаагүй арлыг, тэгээд тэр живэхэд үлдсэн эргүүлгийг дүрсэлжээ. 1752 онд бишоп Понтоппидан үүнийг дэлхийн хамгийн том амьтан хэмээн бичсэн. Нэг зууны дараа татаж гаргасан аварга кальмар нь тэр л түүхийн жижиг, илүү үнэн хувилбар болж таарсан."
+    ),
+    traits: [
+      { icon: "t-ruler", key: "length", value: t("A mile across, by oath", "Нэг миль өргөн (тангаргаар)") },
+      { icon: "t-depth", key: "depth", value: t("Norwegian Sea floor", "Норвегийн тэнгисийн ёроол") },
+      { icon: "t-diet", key: "diet", value: t("Fish, whales and ships", "Загас, халим, хөлөг онгоц") },
+      { icon: "t-range", key: "reported", value: t("Off Bergen, Norway", "Берген орчим, Норвеги") },
+    ],
+    habitat: t("Cold deep water between Norway and Iceland.", "Норвеги, Исландын хоорондох хүйтэн гүн ус."),
+    caption: t("The island breathed, and the crew stopped rowing.", "Арал амьсгалахад багийнхан сэлүүрээ зогсоов."),
+    closeup: t("Suckers the width of a barrel lid, each ringed with a horn like a saw.", "Торхны таг хэмжээтэй сорогч бүр хөрөө шиг эвэрлэг цагирагтай."),
+    lens: "30% 45%",
+    feature: { title: t("An island with an appetite.", "Хоолны дуршилтай арал."), text: t("Eight arms, two tentacles and a thousand years of sailors’ tales.", "Найман гар, хоёр мэдрэгч, мянган жилийн далайчдын үлгэр.") },
+  },
+];

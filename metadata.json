@@ -1,0 +1,6 @@
+{
+  "name": "M Atlas",
+  "description": "M Atlas is an illustrated field guide in two volumes, birds and myths, with interactive 3D specimens in English and Mongolian.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
