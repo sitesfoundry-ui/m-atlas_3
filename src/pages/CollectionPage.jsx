@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ShellLayout } from "../app/ShellLayout.jsx";
-import { imageFallbackUrl, imageUrl } from "../content/assets.js";
+import { handleSpecimenImageError, imageUrl } from "../content/assets.js";
 import { brand } from "../content/brand.js";
 import { categories } from "../content/categories.js";
 import { specimens } from "../content/specimens.js";
@@ -37,9 +37,16 @@ export function CollectionPage({ onOpenMenu, menuButtonRef }) {
 
   const { volume, category } = found;
   const accentColor = volume === "birds" ? "var(--accent-birds)" : "var(--accent-myths)";
-  const volSpecimens = specimens.filter((s) => s.volume === volume);
+  const categorySpecimen = category.specimen
+    ? specimens.find((s) => s.id === category.specimen)
+    : null;
+  const displaySpecimens = categorySpecimen
+    ? [categorySpecimen]
+    : specimens.filter((s) => s.volume === volume);
   const countStr = format(strings.sidebar.count[volume], { n: category.count });
-  const introLine = format(pages.collection.line, { name: label, count: countStr });
+  const introLine = categorySpecimen
+    ? `${label} · ${countStr}.`
+    : format(pages.collection.line, { name: label, count: countStr });
 
   return (
     <ShellLayout
@@ -68,21 +75,22 @@ export function CollectionPage({ onOpenMenu, menuButtonRef }) {
           {pages.collection.open}
         </h2>
         <div className="collection-grid">
-          {volSpecimens.map((spec) => (
+          {displaySpecimens.map((spec) => (
             <article key={spec.id} className="collection-card">
               <img
+                key={spec.id}
                 src={imageUrl(spec, "thumb")}
                 alt={t(spec.name)}
                 width="110"
                 height="110"
                 decoding="async"
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = imageFallbackUrl(spec);
-                }}
+                onError={(e) => handleSpecimenImageError(e.currentTarget, spec)}
               />
-              <div>
-                <h3 style={{ fontFamily: "var(--serif)", fontWeight: 400, fontSize: "28px", margin: 0, lineHeight: 1.1 }}>
+              <div style={{ minWidth: 0, width: "100%" }}>
+                <div className="page-eyebrow">
+                  {t(spec.family)} · {spec.no}
+                </div>
+                <h3 style={{ fontFamily: "var(--serif)", fontWeight: 400, fontSize: "28px", margin: "6px 0 0", lineHeight: 1.1, overflowWrap: "anywhere" }}>
                   {t(spec.name)}
                 </h3>
                 <div style={{ fontStyle: "italic", fontSize: "13.5px", color: "var(--muted)", marginTop: "4px" }}>

@@ -31,3 +31,15 @@ Run `npm run media:probe -- --write` on a machine with network access to populat
    - `npm run media:footer` → writes `public/media/footer/scene.mp4`, `scene.webm`, and `poster.webp` at 1280 × 720, 60 fps, 4.25 s
 3. Bump `ASSET_VERSION` in `src/content/assets.js` to bust caches.
 4. Set `VITE_ASSET_MODE=local` in your build environment and run `npm run build`.
+
+## Remote media repository (`VITE_MEDIA_BASE`)
+
+Set optional `VITE_MEDIA_BASE` (public base URL with no trailing slash, for example `https://cdn.jsdelivr.net/gh/OWNER/m-atlas-media@main`) in the environment to override the fallback placeholder in `src/content/mediaBase.js` when loading the specimen `.glb` models and cut-out `.webp` images.
+
+## Dev still capture helper
+
+Open the viewer with `?capture=1` while running the dev server (`npm run dev`).
+Select a loaded specimen and press **Shift + P** to save its still.
+It exports a transparent `2000 × 2000 px` WebP (`{id}.webp`) at the home pose.
+Upload the saved cut-outs to `images/{id}.webp` in your media repository.
+This helper is gated behind `import.meta.env.DEV` and excluded from production builds.

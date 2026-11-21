@@ -91,6 +91,25 @@ export function createAtlasViewer(
   let selectSeq = 0;
   let rafId = 0;
   let prevNow = performance.now();
+  let disposeDevHelper = null;
+
+  if (import.meta.env.DEV && new URLSearchParams(window.location.search).get("capture") === "1") {
+    import("../dev/captureStill.js").then(({ attachCaptureStill }) => {
+      if (destroyed) return;
+      disposeDevHelper = attachCaptureStill({
+        root,
+        getSceneCtx: () => sceneCtx,
+        getActiveRig: () => rigs[activeIndex],
+        getAllRigs: () => rigs,
+        onRestoreView: () => {
+          framing.measure(isFocus);
+          if (sceneCtx) {
+            sceneCtx.renderer.render(sceneCtx.scene, sceneCtx.camera);
+          }
+        },
+      });
+    });
+  }
 
   const controls = createControls({
     heroEl: root,
@@ -156,6 +175,9 @@ export function createAtlasViewer(
       const selected = idx === selectedIdx;
       btn.setAttribute("aria-selected", selected ? "true" : "false");
       btn.setAttribute("tabindex", selected ? "0" : "-1");
+      if (selected) {
+        btn.scrollIntoView?.({ block: "nearest", inline: "nearest" });
+      }
     });
   }
 
@@ -488,6 +510,8 @@ export function createAtlasViewer(
     dprMedia?.removeEventListener?.("change", onDprChange);
     window.removeEventListener("orientationchange", onOrientation);
     document.removeEventListener("visibilitychange", onVisibility);
+    disposeDevHelper?.();
+    disposeDevHelper = null;
     search.destroy();
     controls.destroy();
     infoPainter.destroy();

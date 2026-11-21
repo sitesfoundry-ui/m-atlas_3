@@ -1,4 +1,4 @@
-import { imageFallbackUrl, imageUrl } from "../../../content/assets.js";
+import { handleSpecimenImageError, imageFallbackUrl, imageUrl } from "../../../content/assets.js";
 import { format, localizeField } from "../../../i18n/index.js";
 
 function makeSvgIcon(id, className = "ico") {
@@ -158,18 +158,58 @@ export function createInfoPainter(heroEl, { onToggleCloseup, getZoomGoal }) {
     wrap.appendChild(btn);
     addRow(wrap);
 
+    if (specimen.credit) {
+      const creditP = document.createElement("p");
+      creditP.className = "credit";
+
+      const makeCreditLink = (href, label) => {
+        const a = document.createElement("a");
+        a.href = href;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.appendChild(document.createTextNode(label));
+        const sr = document.createElement("span");
+        sr.className = "sr-only";
+        sr.textContent = strings.detail.credit.newTab;
+        a.appendChild(sr);
+        return a;
+      };
+
+      const { title, author, authorUrl, url, license, licenseUrl } = specimen.credit;
+      const isCc0 = license === "CC0";
+      const parts = strings.detail.credit.template.split(/(\{title\}|\{author\}|\{license\})/g);
+
+      for (const part of parts) {
+        if (part === "{title}") {
+          creditP.appendChild(makeCreditLink(url, title));
+        } else if (part === "{author}") {
+          if (authorUrl || !isCc0) {
+            creditP.appendChild(makeCreditLink(authorUrl || url, author));
+          } else {
+            creditP.appendChild(document.createTextNode(author));
+          }
+        } else if (part === "{license}") {
+          const licenseLabel = isCc0 ? strings.detail.credit.cc0 : license;
+          creditP.appendChild(makeCreditLink(licenseUrl, licenseLabel));
+        } else if (part) {
+          creditP.appendChild(document.createTextNode(part));
+        }
+      }
+
+      addRow(creditP);
+    }
+
     if (captionEl) captionEl.textContent = t(specimen.caption);
     if (scaleEl) scaleEl.textContent = t(specimen.scale);
     if (fallbackEl) {
       fallbackEl.style.backgroundImage = `url("${fullImg}"), url("${imageFallbackUrl(specimen)}")`;
     }
     if (featImg) {
+      delete featImg.dataset.fallbackTried;
+      delete featImg.dataset.missing;
+      featImg.onerror = () => handleSpecimenImageError(featImg, specimen);
+      featImg.alt = "";
       featImg.src = imageUrl(specimen, "thumb");
-      featImg.alt = t(specimen.name);
-      featImg.onerror = () => {
-        featImg.onerror = null;
-        featImg.src = imageFallbackUrl(specimen);
-      };
     }
     if (featTitle) featTitle.textContent = t(specimen.feature.title);
     if (featText) featText.textContent = t(specimen.feature.text);

@@ -49,7 +49,7 @@ test("contactSchema rejects unknown specimenId even on feedback", () => {
     fullName: "Bat-Erdene",
     email: "bat@example.com",
     topic: "feedback",
-    specimenId: "dragon",
+    specimenId: "leviathan",
     message: "Feedback",
     consentGiven: true,
   });

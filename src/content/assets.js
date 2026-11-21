@@ -52,8 +52,31 @@ export function canPrefetchNext() {
   return true;
 }
 
+const LOCAL_ASSET_IDS = new Set(["hoopoe", "kingfisher", "phoenix", "kraken"]);
+
+export const EMPTY_IMAGE_DATA_URL =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/%3E";
+
+export function handleSpecimenImageError(imgEl, specimen) {
+  if (!imgEl) return;
+  const fallback = specimen ? imageFallbackUrl(specimen) : "";
+  if (
+    fallback &&
+    !imgEl.dataset.fallbackTried &&
+    imgEl.getAttribute("src") !== fallback
+  ) {
+    imgEl.dataset.fallbackTried = "1";
+    imgEl.src = fallback;
+    return;
+  }
+  imgEl.onerror = null;
+  imgEl.alt = "";
+  imgEl.dataset.missing = "true";
+  imgEl.src = EMPTY_IMAGE_DATA_URL;
+}
+
 export function imageUrl(specimen, variant = "thumb", dpr = typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1) {
-  if (assetMode === "local") {
+  if (assetMode === "local" && LOCAL_ASSET_IDS.has(specimen.id)) {
     if (variant === "full") {
       const size = dpr >= 2.5 ? 2400 : 1600;
       return `/media/images/${specimen.id}-${size}.webp?v=${ASSET_VERSION}`;
@@ -66,14 +89,14 @@ export function imageUrl(specimen, variant = "thumb", dpr = typeof window !== "u
 }
 
 export function imageFallbackUrl(specimen) {
-  if (assetMode === "local") {
+  if (assetMode === "local" && LOCAL_ASSET_IDS.has(specimen.id)) {
     return `/media/images/${specimen.id}.png?v=${ASSET_VERSION}`;
   }
   return specimen.image;
 }
 
 export function modelUrl(specimen) {
-  if (assetMode === "local") {
+  if (assetMode === "local" && LOCAL_ASSET_IDS.has(specimen.id)) {
     const suffix = isMobileGpuTarget() ? "-m" : "";
     return `/models/${specimen.id}${suffix}.glb?v=${ASSET_VERSION}`;
   }

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useLight } from "../../app/useLight.js";
 import { LanguageToggle } from "../../components/shell/LanguageToggle.jsx";
-import { imageFallbackUrl, imageUrl } from "../../content/assets.js";
+import { handleSpecimenImageError, imageUrl } from "../../content/assets.js";
 import { brand } from "../../content/brand.js";
 import { categories } from "../../content/categories.js";
 import { specimens as allSpecimens } from "../../content/specimens.js";
@@ -266,10 +266,7 @@ export function AtlasPage({ volume, onOpenMenu, menuButtonRef }) {
                 width="58"
                 height="52"
                 decoding="async"
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = imageFallbackUrl(spec);
-                }}
+                onError={(e) => handleSpecimenImageError(e.currentTarget, spec)}
               />
               <span className="tab-text">
                 <b>{t(spec.name)}</b>

@@ -1,0 +1,15 @@
+# 3D Model Credits
+
+All attributed 3D specimens below are simplified and compressed for real-time web viewing (mesh decimated, Draco/GLB compressed, textures resized).
+
+| id | title | author | source URL | licence | licence URL | what was changed | date added |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `blue-jay` | Blue Jay, Cyanocitta cristata (MLZ:Bird:65124) | MooreLab | https://sketchfab.com/3d-models/blue-jay-cyanocitta-cristata-bbe937f9a0ea441496159d8f7821d07f | CC BY 4.0 | https://creativecommons.org/licenses/by/4.0/ | Decimated mesh, compressed GLB, resized textures | 2026-11-21 |
+| `screech-owl` | Eastern Screech Owl | Innovation Studio, Carnegie Museum of Natural History | https://sketchfab.com/3d-models/eastern-screech-owl-1b34de1b8208495abb37b4b629c1f8a3 | CC BY 4.0 | https://creativecommons.org/licenses/by/4.0/ | Decimated mesh, compressed GLB, resized textures | 2026-11-21 |
+| `hummingbird` | Stripe-tailed Hummingbird, Eupherusa eximia (MLZ:Bird:25869) | MooreLab | https://sketchfab.com/3d-models/stripe-tailed-hummingbird-eupherusa-eximia-d878d181cc3947f3a4e4fa22c6cd11f5 | CC BY 4.0 | https://creativecommons.org/licenses/by/4.0/ | Decimated mesh, compressed GLB, resized textures | 2026-11-21 |
+| `golden-eagle` | Golden Eagle (Tomek Natural Science Museum, Ciężkowice, inv. MP 407) | Virtual Museums of Małopolska | https://sketchfab.com/3d-models/golden-eagle-dd0552b1f93b441cbdd626a5b2abebbf | CC0 | https://creativecommons.org/publicdomain/zero/1.0/ | Decimated mesh, compressed GLB, resized textures | 2026-11-21 |
+| `boat-billed-heron` | Boat-billed Heron, Cochlearius cochlearius (MLZ:Bird:13447) | MooreLab | https://sketchfab.com/3d-models/boat-billed-heron-cochlearius-cochlearius-4fad4a07bacd432b88736c95475c6dbb | CC BY 4.0 | https://creativecommons.org/licenses/by/4.0/ | Decimated mesh, compressed GLB, resized textures | 2026-11-21 |
+| `dragon` | Winged Dragon (one of pair), 5th–4th century BCE | Minneapolis Institute of Art | https://sketchfab.com/3d-models/winged-dragon-one-of-pair-5th-4th-century-bce-b390b4046d6c46beb811c8c9e21014d4 | CC0 | https://creativecommons.org/publicdomain/zero/1.0/ | Decimated mesh, compressed GLB, resized textures | 2026-11-21 |
+| `griffin` | Stone Griffin, Downing College, Cambridge | Thomas Flynn | https://sketchfab.com/3d-models/stone-griffin-downing-college-cambridge-d94638d6c6ad4119b868567cf8e9fe2b | CC BY 4.0 | https://creativecommons.org/licenses/by/4.0/ | Decimated mesh, compressed GLB, resized textures | 2026-11-21 |
+| `titan` | Ancient Titan Statue | Kaan Tezcan | https://sketchfab.com/3d-models/ancient-titan-statue-c7e1295da4574a248f717367c842430b | CC BY 4.0 | https://creativecommons.org/licenses/by/4.0/ | Decimated mesh, compressed GLB, resized textures | 2026-11-21 |
+| `kappa` | Netsuke: Kappa and Toad | Minneapolis Institute of Art | https://sketchfab.com/3d-models/netsuke-kappa-and-toad-745efca54e0244d48d2719516f8a6c7f | CC0 | https://creativecommons.org/publicdomain/zero/1.0/ | Decimated mesh, compressed GLB, resized textures | 2026-11-21 |

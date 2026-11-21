@@ -55,6 +55,23 @@ svg {
   display: block;
 }
 
+img[data-missing="true"] {
+  background: var(--chip);
+  border-radius: 6px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .ico {
   width: 20px;
   height: 20px;
@@ -478,6 +495,8 @@ svg {
   flex-direction: column;
   align-items: center;
   gap: 6px;
+  max-width: 96px;
+  text-align: center;
   text-decoration: none;
 }
 
@@ -489,7 +508,9 @@ svg {
 
 .vol-cutout span {
   font-size: 13px;
+  line-height: 1.25;
   color: var(--ink);
+  overflow-wrap: break-word;
 }
 
 .steps-grid {
@@ -965,6 +986,7 @@ svg {
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
+  min-width: 0;
 }
 
 .collection-card img {

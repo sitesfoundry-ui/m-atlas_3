@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ShellLayout } from "../app/ShellLayout.jsx";
-import { imageFallbackUrl, imageUrl } from "../content/assets.js";
+import { handleSpecimenImageError, imageUrl } from "../content/assets.js";
 import { brand } from "../content/brand.js";
 import { notes } from "../content/notes.js";
 import { specimens } from "../content/specimens.js";
@@ -106,10 +106,7 @@ export function NotePage({ onOpenMenu, menuButtonRef }) {
             width="70"
             height="70"
             decoding="async"
-            onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = imageFallbackUrl(relatedSpecimen);
-            }}
+            onError={(e) => handleSpecimenImageError(e.currentTarget, relatedSpecimen)}
           />
           <div style={{ flex: "1 1 180px" }}>
             <div style={{ fontFamily: "var(--serif)", fontSize: "22px", lineHeight: 1.15 }}>

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ShellLayout } from "../app/ShellLayout.jsx";
 import { useNoIndex } from "../app/useNoIndex.js";
-import { imageFallbackUrl, imageUrl } from "../content/assets.js";
+import { handleSpecimenImageError, imageUrl } from "../content/assets.js";
 import { brand } from "../content/brand.js";
 import { specimens } from "../content/specimens.js";
 import { useLocale } from "../i18n/useLocale.js";
@@ -84,10 +84,7 @@ export function NotFoundPage({ onOpenMenu, menuButtonRef }) {
                 width="76"
                 height="76"
                 decoding="async"
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = imageFallbackUrl(spec);
-                }}
+                onError={(e) => handleSpecimenImageError(e.currentTarget, spec)}
               />
               <span className="notfound-card-meta">
                 <span className="notfound-card-no">

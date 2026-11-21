@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ShellLayout } from "../app/ShellLayout.jsx";
-import { imageFallbackUrl, imageUrl } from "../content/assets.js";
+import { handleSpecimenImageError, imageUrl } from "../content/assets.js";
 import { brand } from "../content/brand.js";
 import { specimens } from "../content/specimens.js";
 import { useLocale } from "../i18n/useLocale.js";
@@ -45,10 +45,7 @@ export function AboutPage({ onOpenMenu, menuButtonRef }) {
                     width="62"
                     height="54"
                     decoding="async"
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = imageFallbackUrl(spec);
-                    }}
+                    onError={(e) => handleSpecimenImageError(e.currentTarget, spec)}
                   />
                   <span>{t(spec.name)}</span>
                 </Link>
@@ -77,10 +74,7 @@ export function AboutPage({ onOpenMenu, menuButtonRef }) {
                     width="62"
                     height="54"
                     decoding="async"
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = imageFallbackUrl(spec);
-                    }}
+                    onError={(e) => handleSpecimenImageError(e.currentTarget, spec)}
                   />
                   <span>{t(spec.name)}</span>
                 </Link>

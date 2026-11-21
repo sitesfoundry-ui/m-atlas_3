@@ -6,6 +6,11 @@ export const volumes = {
     specimens: [
       "hoopoe",
       "kingfisher",
+      "blue-jay",
+      "screech-owl",
+      "hummingbird",
+      "golden-eagle",
+      "boat-billed-heron",
     ],
     defaultSpecimen: "kingfisher",
   },
@@ -16,6 +21,10 @@ export const volumes = {
     specimens: [
       "phoenix",
       "kraken",
+      "dragon",
+      "griffin",
+      "titan",
+      "kappa",
     ],
     defaultSpecimen: "phoenix",
   },

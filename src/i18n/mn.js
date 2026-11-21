@@ -86,6 +86,11 @@ export default {
       medieval: "Дундад зуун",
       modern: "Орчин",
     },
+    credit: {
+      template: "3D загвар: {title} — {author} · {license}. Вэбд зориулан хөнгөвчилж, шахсан.",
+      cc0: "Нийтийн өмч (CC0)",
+      newTab: " (шинэ цонхонд нээгдэнэ)",
+    },
   },
   traitLabels: {
     length: "Урт",
@@ -96,6 +101,7 @@ export default {
     lifespan: "Наслалт",
     reported: "Тэмдэглэгдсэн",
     depth: "Гүн",
+    weight: "Жин",
   },
   footer: {
     rights: "© M Atlas. Бүх эрх хуулиар хамгаалагдсан.",

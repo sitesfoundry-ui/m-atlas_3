@@ -86,6 +86,11 @@ export default {
       medieval: "Medieval",
       modern: "Modern",
     },
+    credit: {
+      template: "Model: {title} by {author} · {license}. Simplified and compressed for the web.",
+      cc0: "Public domain (CC0)",
+      newTab: " (opens in a new tab)",
+    },
   },
   traitLabels: {
     length: "Length",
@@ -96,6 +101,7 @@ export default {
     lifespan: "Lifespan",
     reported: "Reported",
     depth: "Depth",
+    weight: "Weight",
   },
   footer: {
     rights: "© M Atlas. All rights reserved.",
