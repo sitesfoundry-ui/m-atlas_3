@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLight } from "../../app/useLight.js";
-import { brand } from "../../content/brand.js";
+import { brand, hasUrl } from "../../content/brand.js";
 import { useLocale } from "../../i18n/useLocale.js";
 import { LanguageToggle } from "./LanguageToggle.jsx";
 
@@ -30,6 +30,9 @@ export function MenuSheet({ open, origin, volume = null, onClose }) {
 
   useEffect(() => {
     if (!open) return undefined;
+    const prevOverflow = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+
     const focusTimer = window.setTimeout(() => {
       closeBtnRef.current?.focus();
     }, 50);
@@ -38,10 +41,37 @@ export function MenuSheet({ open, origin, volume = null, onClose }) {
       if (e.key === "Escape") {
         e.preventDefault();
         onClose();
+        return;
+      }
+      if (e.key === "Tab" && sheetRef.current) {
+        const focusables = Array.from(
+          sheetRef.current.querySelectorAll(
+            'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          )
+        ).filter((el) => el.getClientRects().length > 0);
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey) {
+          if (
+            document.activeElement === first ||
+            !sheetRef.current.contains(document.activeElement)
+          ) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else if (
+          document.activeElement === last ||
+          !sheetRef.current.contains(document.activeElement)
+        ) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => {
+      document.documentElement.style.overflow = prevOverflow;
       window.clearTimeout(focusTimer);
       window.removeEventListener("keydown", onKeyDown);
     };
@@ -128,11 +158,17 @@ export function MenuSheet({ open, origin, volume = null, onClose }) {
             <a href={`mailto:${brand.email}`} style={{ textDecoration: "none" }}>
               {brand.email}
             </a>
-            <span>
-              <a href={brand.social.facebook} style={{ textDecoration: "none" }}>FB</a>
-              {" / "}
-              <a href={brand.social.instagram} style={{ textDecoration: "none" }}>IG</a>
-            </span>
+            {(hasUrl(brand.social.facebook) || hasUrl(brand.social.instagram)) && (
+              <span>
+                {hasUrl(brand.social.facebook) && (
+                  <a href={brand.social.facebook} style={{ textDecoration: "none" }}>FB</a>
+                )}
+                {hasUrl(brand.social.facebook) && hasUrl(brand.social.instagram) && " / "}
+                {hasUrl(brand.social.instagram) && (
+                  <a href={brand.social.instagram} style={{ textDecoration: "none" }}>IG</a>
+                )}
+              </span>
+            )}
           </div>
         </div>
       </div>

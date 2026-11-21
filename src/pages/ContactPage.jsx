@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ShellLayout } from "../app/ShellLayout.jsx";
-import { brand } from "../content/brand.js";
+import { brand, hasUrl } from "../content/brand.js";
 import { specimens } from "../content/specimens.js";
 import { useLocale } from "../i18n/useLocale.js";
 
@@ -167,14 +167,20 @@ export function ContactPage({ onOpenMenu, menuButtonRef }) {
                 <a href={`mailto:${brand.email}`}>{brand.email}</a>
               </dd>
             </div>
-            <div>
-              <dt>{contact.socialLabel}</dt>
-              <dd>
-                <a href={brand.social.facebook}>FB</a>
-                {" / "}
-                <a href={brand.social.instagram}>IG</a>
-              </dd>
-            </div>
+            {(hasUrl(brand.social.facebook) || hasUrl(brand.social.instagram)) && (
+              <div>
+                <dt>{contact.socialLabel}</dt>
+                <dd>
+                  {hasUrl(brand.social.facebook) && (
+                    <a href={brand.social.facebook}>FB</a>
+                  )}
+                  {hasUrl(brand.social.facebook) && hasUrl(brand.social.instagram) && " / "}
+                  {hasUrl(brand.social.instagram) && (
+                    <a href={brand.social.instagram}>IG</a>
+                  )}
+                </dd>
+              </div>
+            )}
             <div>
               <dt>{contact.replyLabel}</dt>
               <dd>{contact.replyValue}</dd>

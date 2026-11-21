@@ -17,15 +17,19 @@ export function createSearch({
   let results = [];
   let activeIndex = -1;
 
-  function matchesSpecimen(spec, query, locale) {
-    const t = (v) => localizeField(v, locale).toLowerCase();
+  const LOCALES = ["en", "mn"];
+
+  function matchesSpecimen(spec, query) {
     const q = query.toLowerCase();
-    if (t(spec.name).includes(q)) return true;
     if (spec.latin.toLowerCase().includes(q)) return true;
-    if (t(spec.family).includes(q)) return true;
-    if (t(spec.habitat).includes(q)) return true;
-    if (spec.tags.some((tag) => t(tag).includes(q))) return true;
-    return false;
+    return LOCALES.some((loc) => {
+      const t = (v) => localizeField(v, loc).toLowerCase();
+      if (t(spec.name).includes(q)) return true;
+      if (t(spec.family).includes(q)) return true;
+      if (t(spec.habitat).includes(q)) return true;
+      if (spec.tags.some((tag) => t(tag).includes(q))) return true;
+      return false;
+    });
   }
 
   function closeDropdown() {
@@ -64,7 +68,7 @@ export function createSearch({
 
     const locale = getLocale();
     const strings = getStrings();
-    results = allSpecimens.filter((s) => matchesSpecimen(s, q, locale)).slice(0, 4);
+    results = allSpecimens.filter((s) => matchesSpecimen(s, q)).slice(0, 4);
     activeIndex = results.length > 0 ? 0 : -1;
 
     dropdown.replaceChildren();

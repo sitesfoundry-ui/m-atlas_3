@@ -155,10 +155,13 @@ export default {
     view: "View the plate",
   },
   notFound: {
+    eyebrow: "Plate MA-404 · Missing",
     title: "This plate is missing.",
     text: "The page you asked for is not in the atlas. It may have moved, or it may only exist in a legend.",
+    requested: "You asked for",
     birds: "Back to Birds",
     myths: "Open Myths",
+    specimensTitle: "Two plates that do exist",
   },
   legal: {
     updatedLabel: "Last updated",

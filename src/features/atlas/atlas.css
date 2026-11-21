@@ -225,22 +225,6 @@
   overflow: hidden;
 }
 
-.feature-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 10px;
-  font-size: 12px;
-  color: var(--ink);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.feature-link .ico {
-  width: 14px;
-  height: 14px;
-}
-
 /* Center stage column */
 .main {
   display: grid;
@@ -423,8 +407,83 @@
   pointer-events: none;
 }
 
-.stage.failed .fallback {
+.stage.failed .fallback,
+.stage.gated .fallback {
   display: block;
+}
+
+.stage-panel {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  display: none;
+  justify-items: center;
+  gap: 8px;
+  width: min(300px, calc(100% - 32px));
+  padding: 18px 20px;
+  background: color-mix(in srgb, var(--panel) 94%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0 12px 28px rgba(var(--shadow), .12);
+}
+
+.hero[data-volume="myths"] .stage-panel {
+  border-radius: 3px;
+}
+
+.stage-panel-title {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.stage-panel-text {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.stage-panel-btn {
+  margin-top: 6px;
+  padding: 9px 16px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: transform .2s var(--ease), opacity .2s var(--ease);
+}
+
+.hero[data-volume="myths"] .stage-panel-btn {
+  border-radius: 3px;
+}
+
+.stage-panel-btn:hover {
+  transform: translateY(-1px);
+}
+
+.stage.failed .stage-panel-error,
+.stage.gated .stage-panel-gate {
+  display: grid;
+}
+
+.stage.failed .hint,
+.stage.failed .turn,
+.stage.failed #zoomIn,
+.stage.failed #zoomOut,
+.stage.gated .hint,
+.stage.gated .turn,
+.stage.gated #zoomIn,
+.stage.gated #zoomOut {
+  display: none;
 }
 
 .loader {

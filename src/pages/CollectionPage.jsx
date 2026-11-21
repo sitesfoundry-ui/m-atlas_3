@@ -71,7 +71,7 @@ export function CollectionPage({ onOpenMenu, menuButtonRef }) {
           {volSpecimens.map((spec) => (
             <article key={spec.id} className="collection-card">
               <img
-                src={imageUrl(spec, "full")}
+                src={imageUrl(spec, "thumb")}
                 alt={t(spec.name)}
                 width="110"
                 height="110"

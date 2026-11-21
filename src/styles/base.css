@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 html,
 body {
   margin: 0;
@@ -11,6 +15,10 @@ body {
   min-height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.app-content {
+  display: contents;
 }
 
 body {
@@ -1012,6 +1020,124 @@ svg {
   margin-top: 28px;
 }
 
+.notfound-path {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 10px;
+  margin: 18px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.notfound-path code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--chip);
+  color: var(--ink);
+  word-break: break-all;
+}
+
+.notfound-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 20px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.notfound-links a {
+  position: relative;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.notfound-links a::after {
+  content: "";
+  position: absolute;
+  inset: -6px -4px;
+}
+
+.notfound-links a:hover {
+  color: var(--ink);
+}
+
+.notfound-specimens {
+  max-width: 720px;
+}
+
+.notfound-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .notfound-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.notfound-card {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  text-decoration: none;
+  transition: border-color .25s var(--ease), transform .25s var(--ease);
+}
+
+.notfound-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.notfound-card img {
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+}
+
+.notfound-card-meta {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.notfound-card-no {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+[lang="mn"] .notfound-card-no {
+  letter-spacing: calc(.16em * .6);
+}
+
+.notfound-card-name {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.notfound-card-latin {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--muted);
+}
+
 /* Menu sheet */
 .menu-sheet {
   position: fixed;
@@ -1137,3 +1263,31 @@ svg {
     transition-duration: .01s !important;
   }
 }
+
+.page-main:focus {
+  outline: none;
+}
+
+.lang-toggle button,
+.bf-nav a,
+.bf-legal a,
+.contact-dl a,
+.note-article-back {
+  position: relative;
+}
+
+.bf-nav a::after,
+.bf-legal a::after,
+.contact-dl a::after,
+.note-article-back::after {
+  content: "";
+  position: absolute;
+  inset: -6px -4px;
+}
+
+.lang-toggle button::after {
+  content: "";
+  position: absolute;
+  inset: -8px 0;
+}
+

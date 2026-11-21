@@ -15,6 +15,7 @@ function AppShell() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setMenuOpen(false);
   }, [pathname]);
 
   const handleOpenMenu = useCallback((triggerEl) => {
@@ -45,7 +46,9 @@ function AppShell() {
     <>
       <IconSprite />
       <RouteTransition />
-      <AppRoutes onOpenMenu={handleOpenMenu} menuButtonRef={menuButtonRef} />
+      <div className="app-content" inert={menuOpen}>
+        <AppRoutes onOpenMenu={handleOpenMenu} menuButtonRef={menuButtonRef} />
+      </div>
       <MenuSheet
         open={menuOpen}
         origin={menuOrigin}

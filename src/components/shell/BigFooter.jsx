@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { footerMedia } from "../../content/assets.js";
-import { brand } from "../../content/brand.js";
+import { brand, hasUrl } from "../../content/brand.js";
 import { useLocale } from "../../i18n/useLocale.js";
 import { StrokeBackdrop } from "./StrokeBackdrop.jsx";
 import { createFooterReveal } from "./footerReveal.js";
@@ -177,14 +177,20 @@ export function BigFooter() {
           <Link to="/about">{strings.nav.about}</Link>
           <Link to="/contact">{strings.nav.contact}</Link>
         </div>
-        <div className="bf-nav-right">
-          <a href={brand.social.instagram}>{strings.footer.instagram}</a>
-          <a href={brand.social.facebook}>{strings.footer.facebook}</a>
-        </div>
+        {(hasUrl(brand.social.instagram) || hasUrl(brand.social.facebook)) && (
+          <div className="bf-nav-right">
+            {hasUrl(brand.social.instagram) && (
+              <a href={brand.social.instagram}>{strings.footer.instagram}</a>
+            )}
+            {hasUrl(brand.social.facebook) && (
+              <a href={brand.social.facebook}>{strings.footer.facebook}</a>
+            )}
+          </div>
+        )}
       </nav>
 
       <div className="bf-hero-wrap">
-        <div className="bf-word" role="img" aria-label={brand.name}>
+        <div className="bf-word">
           <span className="bf-letters" aria-hidden="true">AT</span>
           <div className="bf-pill">
             <div className="bf-pill-clip">

@@ -7,18 +7,21 @@ const mode =
 
 export const assetMode = mode === "local" ? "local" : "remote";
 
-function rewriteHiggsUrl(url, width, quality) {
+function buildHiggsUrl(rawUrl, width, quality) {
   try {
-    const parsed = new URL(url);
+    const parsed = new URL(rawUrl);
     if (parsed.hostname === "images.higgs.ai") {
       parsed.searchParams.set("w", String(width));
       parsed.searchParams.set("q", String(quality));
       return parsed.toString();
     }
+    if (parsed.hostname === "d8j0ntlcm91z4.cloudfront.net") {
+      return `https://images.higgs.ai/?default=1&output=webp&url=${encodeURIComponent(rawUrl)}&w=${width}&q=${quality}`;
+    }
   } catch {
-    return url;
+    return rawUrl;
   }
-  return url;
+  return rawUrl;
 }
 
 export function isMobileGpuTarget() {
@@ -26,6 +29,27 @@ export function isMobileGpuTarget() {
   const smallViewport = window.matchMedia && window.matchMedia("(max-width: 760px)").matches;
   const lowMemory = typeof navigator !== "undefined" && typeof navigator.deviceMemory === "number" && navigator.deviceMemory <= 4;
   return Boolean(smallViewport || lowMemory);
+}
+
+export function isDeviceGated() {
+  if (assetMode !== "remote" || typeof window === "undefined") return false;
+  if (isMobileGpuTarget()) return true;
+  const conn = typeof navigator !== "undefined" ? navigator.connection : null;
+  if (conn) {
+    if (conn.saveData) return true;
+    if (conn.effectiveType && ["slow-2g", "2g", "3g"].includes(conn.effectiveType)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function canPrefetchNext() {
+  if (typeof window === "undefined") return false;
+  if (isDeviceGated()) return false;
+  const mem = typeof navigator !== "undefined" ? navigator.deviceMemory : undefined;
+  if (typeof mem === "number" && mem < 8) return false;
+  return true;
 }
 
 export function imageUrl(specimen, variant = "thumb", dpr = typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1) {
@@ -36,12 +60,9 @@ export function imageUrl(specimen, variant = "thumb", dpr = typeof window !== "u
     }
     return `/media/images/${specimen.id}-320.webp?v=${ASSET_VERSION}`;
   }
-  if (specimen.image.includes("images.higgs.ai")) {
-    return variant === "full"
-      ? rewriteHiggsUrl(specimen.image, 1600, 90)
-      : rewriteHiggsUrl(specimen.image, 320, 85);
-  }
-  return specimen.image;
+  return variant === "full"
+    ? buildHiggsUrl(specimen.image, 1600, 90)
+    : buildHiggsUrl(specimen.image, 320, 85);
 }
 
 export function imageFallbackUrl(specimen) {

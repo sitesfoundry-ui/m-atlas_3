@@ -38,10 +38,12 @@ export function AtlasPage({ volume, onOpenMenu, menuButtonRef }) {
   );
 
   const [activeId, setActiveId] = useState(initialSpecimenId);
+  const [attempt, setAttempt] = useState(0);
 
   const rootRef = useRef(null);
   const viewerRef = useRef(null);
   const tabRefs = useRef([]);
+  const activeIdRef = useRef(initialSpecimenId);
 
   useEffect(() => {
     document.title = `${volume === "birds" ? strings.nav.birds : strings.nav.myths} · ${brand.name}`;
@@ -61,16 +63,23 @@ export function AtlasPage({ volume, onOpenMenu, menuButtonRef }) {
     };
   }, [volume, light]);
 
-  const handleSelectSpecimen = useCallback((id) => {
-    setActiveId(id);
-    const url = new URL(window.location.href);
-    url.searchParams.set("specimen", id);
-    window.history.replaceState(null, "", url.pathname + url.search);
-  }, []);
+  const handleSelectSpecimen = useCallback(
+    (id) => {
+      activeIdRef.current = id;
+      setActiveId(id);
+      const next = new URLSearchParams(window.location.search);
+      next.set("specimen", id);
+      navigate({ search: `?${next.toString()}` }, { replace: true });
+    },
+    [navigate]
+  );
 
   useEffect(() => {
     const el = rootRef.current;
     if (!el) return undefined;
+
+    activeIdRef.current = initialSpecimenId;
+    setActiveId(initialSpecimenId);
 
     const viewer = createAtlasViewer(el, {
       volume,
@@ -82,6 +91,7 @@ export function AtlasPage({ volume, onOpenMenu, menuButtonRef }) {
       onSelectSpecimen: handleSelectSpecimen,
       onNavigate: (path) => navigate(path),
       onToggleLight: toggleLight,
+      onRecreate: () => setAttempt((n) => n + 1),
     });
     viewerRef.current = viewer;
 
@@ -89,17 +99,17 @@ export function AtlasPage({ volume, onOpenMenu, menuButtonRef }) {
       viewer.destroy();
       viewerRef.current = null;
     };
-    // Intentionally initialize once per volume route mount
+    // Intentionally initialize once per volume route or context recreation
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [volume]);
+  }, [volume, attempt]);
 
   // Respond to ?specimen= query changes while on same volume
   useEffect(() => {
     const q = searchParams.get("specimen");
-    if (q && volConfig.specimens.includes(q) && q !== activeId) {
+    if (q && volConfig.specimens.includes(q) && q !== activeIdRef.current) {
       viewerRef.current?.select(q);
     }
-  }, [searchParams, volConfig, activeId]);
+  }, [searchParams, volConfig]);
 
   useEffect(() => {
     viewerRef.current?.setLocale(locale, strings);
@@ -118,16 +128,6 @@ export function AtlasPage({ volume, onOpenMenu, menuButtonRef }) {
     tabRefs.current[nextIdx]?.focus();
   };
 
-  const handleLearnMore = (e) => {
-    e.preventDefault();
-    const detail = rootRef.current?.querySelector("#detail");
-    if (detail) {
-      detail.setAttribute("tabindex", "-1");
-      detail.focus({ preventScroll: false });
-      detail.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
-  };
-
   const volCategories = categories[volume] || [];
   const defaultIdx = Math.max(
     0,
@@ -142,7 +142,7 @@ export function AtlasPage({ volume, onOpenMenu, menuButtonRef }) {
       data-volume={volume}
       data-light={light}
     >
-      <canvas id="gl" className="hero-gl" aria-hidden="true" />
+      <canvas key={attempt} id="gl" className="hero-gl" aria-hidden="true" />
 
       <aside className="side" aria-label={strings.sidebar.sections}>
         <div className="brand-wrap">
@@ -234,12 +234,6 @@ export function AtlasPage({ volume, onOpenMenu, menuButtonRef }) {
           <img id="featImg" alt="" width="92" height="76" decoding="async" />
           <h3 id="featTitle" />
           <p id="featText" />
-          <a href="#detail" className="feature-link" onClick={handleLearnMore}>
-            <span>{strings.sidebar.learnMore}</span>
-            <svg className="ico" aria-hidden="true">
-              <use href="#i-arrow" />
-            </svg>
-          </a>
         </div>
       </aside>
 
@@ -301,6 +295,32 @@ export function AtlasPage({ volume, onOpenMenu, menuButtonRef }) {
           <div id="fallback" className="fallback" aria-hidden="true" />
           <div id="loader" className="loader" role="status" aria-live="polite">
             <span id="loaderText">{strings.viewer.loader}</span>
+          </div>
+
+          <div id="viewerError" className="stage-panel stage-panel-error" role="alert">
+            <p id="errorTitle" className="stage-panel-title">{strings.viewer.errorTitle}</p>
+            <p id="errorText" className="stage-panel-text">{strings.viewer.errorText}</p>
+            <button
+              type="button"
+              id="retryBtn"
+              className="stage-panel-btn"
+              onClick={() => viewerRef.current?.retry()}
+            >
+              {strings.viewer.retry}
+            </button>
+          </div>
+
+          <div id="viewerGate" className="stage-panel stage-panel-gate">
+            <p id="gateTitle" className="stage-panel-title">{strings.viewer.gateTitle}</p>
+            <p id="gateText" className="stage-panel-text">{strings.viewer.gateText}</p>
+            <button
+              type="button"
+              id="gateBtn"
+              className="stage-panel-btn"
+              onClick={() => viewerRef.current?.loadGated()}
+            >
+              {strings.viewer.gateButton}
+            </button>
           </div>
 
           <div className="hint" aria-hidden="true">

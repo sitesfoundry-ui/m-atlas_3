@@ -25,7 +25,7 @@ export const specimens = [
     caption: t("A crown raised, and the orchard takes notice.", "Титэм өргөгдөхөд цэцэрлэг анзаарав."),
     closeup: t("Every crest feather ends in a black tip, so the raised fan reads like a row of signal flags.", "Сүлдний өд бүр хар үзүүртэй тул өргөсөн сэнс дохионы тугийн эгнээ шиг харагдана."),
     lens: "62% 22%",
-    feature: { title: t("A crown of cinnamon.", "Шаргал хүрэн титэм."), text: t("Bold bars on broad wings. A call you hear before you see it.", "Өргөн далавч дээрх тод судал. Харахаасаа өмнө сонсогддог дуудлага.") },
+    feature: { title: t("A crown of cinnamon.", "Шаргал хүрэн титэм."), text: t("Bold bars on broad wings. A call you hear before you see it.", "Тод судалтай далавч. Дуу нь түрүүлж сонсогдоно.") },
   },
   {
     id: "kingfisher", volume: "birds", no: "MA-102",
@@ -77,7 +77,7 @@ export const specimens = [
     caption: t("Burns once a lifetime. Never twice the same.", "Нэг насандаа нэг л шатна. Хоёр удаа адилгүй."),
     closeup: t("Each tail plume ends in a pale gold tip, the only part said to survive the fire.", "Сүүлний өд бүр цайвар алтан үзүүртэй. Галаас амьд үлддэг цорын ганц хэсэг гэдэг."),
     lens: "55% 25%",
-    feature: { title: t("A fire you can outlive.", "Даван туулах гал."), text: t("Crimson, gold and patient. The bird that refuses to end.", "Час улаан, алтан, тэвчээртэй. Төгсөхөөс татгалздаг шувуу.") },
+    feature: { title: t("A fire you can outlive.", "Даван туулах гал."), text: t("Crimson, gold and patient. The bird that refuses to end.", "Час улаан, алтан. Төгсөхөөс татгалздаг шувуу.") },
   },
   {
     id: "kraken", volume: "myths", no: "MA-202",
@@ -103,6 +103,6 @@ export const specimens = [
     caption: t("The island breathed, and the crew stopped rowing.", "Арал амьсгалахад багийнхан сэлүүрээ зогсоов."),
     closeup: t("Suckers the width of a barrel lid, each ringed with a horn like a saw.", "Торхны таг хэмжээтэй сорогч бүр хөрөө шиг эвэрлэг цагирагтай."),
     lens: "30% 45%",
-    feature: { title: t("An island with an appetite.", "Хоолны дуршилтай арал."), text: t("Eight arms, two tentacles and a thousand years of sailors’ tales.", "Найман гар, хоёр мэдрэгч, мянган жилийн далайчдын үлгэр.") },
+    feature: { title: t("An island with an appetite.", "Хоолны дуршилтай арал."), text: t("Eight arms, two tentacles and a thousand years of sailors’ tales.", "Найман гар, хоёр мэдрэгч. Далайчдын үлгэр.") },
   },
 ];

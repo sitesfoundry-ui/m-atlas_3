@@ -57,7 +57,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: .3em 1.2em;
-  padding: .14em .27em 0;
+  padding: calc(var(--fs) * .14) calc(var(--fs) * .27) 0;
   font-size: max(12px, .072em);
   font-weight: 450;
   line-height: 1.25;

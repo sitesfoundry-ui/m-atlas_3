@@ -139,8 +139,9 @@ export function createInfoPainter(heroEl, { onToggleCloseup, getZoomGoal }) {
 
     const lens = document.createElement("span");
     lens.className = "lens";
+    const thumbImg = imageUrl(specimen, "thumb");
     const fullImg = imageUrl(specimen, "full");
-    lens.style.backgroundImage = `url("${fullImg}")`;
+    lens.style.backgroundImage = `url("${thumbImg}"), url("${imageFallbackUrl(specimen)}")`;
     lens.style.backgroundPosition = specimen.lens;
 
     const textBox = document.createElement("span");

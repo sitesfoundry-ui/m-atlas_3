@@ -6,6 +6,7 @@ data/
 assets-src/
 public/models/
 public/media/
+public/assets/aistudio/
 .DS_Store
 *.log
 .env*

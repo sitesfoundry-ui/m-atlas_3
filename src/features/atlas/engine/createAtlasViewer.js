@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { isMobileGpuTarget, modelUrl } from "../../../content/assets.js";
+import { canPrefetchNext, isDeviceGated, modelUrl } from "../../../content/assets.js";
 import { format } from "../../../i18n/index.js";
 import { createControls } from "./controls.js";
 import { createFraming } from "./framing.js";
@@ -9,6 +9,7 @@ import { createSearch } from "./search.js";
 import { createViewerScene } from "./scene.js";
 
 const DUR = 780;
+const PREFETCH_DELAY_MS = 4000;
 
 function inCubic(t) {
   return t * t * t;
@@ -34,6 +35,7 @@ export function createAtlasViewer(
     onSelectSpecimen,
     onNavigate,
     onToggleLight,
+    onRecreate,
   }
 ) {
   let locale = initialLocale;
@@ -42,12 +44,22 @@ export function createAtlasViewer(
   let activeIndex = initialIndex;
   let isFocus = false;
   let destroyed = false;
+  let contextLost = false;
   let prefetched = false;
+  let prefetchTimer = 0;
+  let prefetchIdleId = 0;
+  let prefetchAbort = null;
 
   const canvas = root.querySelector("#gl");
   const stageEl = root.querySelector("#stage");
   const loaderEl = root.querySelector("#loader");
   const loaderTextEl = root.querySelector("#loaderText");
+  const errorTitleEl = root.querySelector("#errorTitle");
+  const errorTextEl = root.querySelector("#errorText");
+  const retryBtnEl = root.querySelector("#retryBtn");
+  const gateTitleEl = root.querySelector("#gateTitle");
+  const gateTextEl = root.querySelector("#gateText");
+  const gateBtnEl = root.querySelector("#gateBtn");
 
   const reducedMotion = () =>
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -68,7 +80,8 @@ export function createAtlasViewer(
     rigLoader = createRigLoader(sceneCtx.scene, maxAniso);
     framing = createFraming(root, stageEl, sceneCtx.renderer, sceneCtx.camera);
     rigs = specimens.map((s) => rigLoader.createRig(s));
-  } catch {
+  } catch (error) {
+    console.error("[atlas] viewer init failed", error);
     sceneCtx = null;
     rigLoader = null;
     rigs = [];
@@ -117,6 +130,15 @@ export function createAtlasViewer(
     onNavigate: (path) => onNavigate?.(path),
   });
 
+  function syncPanelText() {
+    if (errorTitleEl) errorTitleEl.textContent = strings.viewer.errorTitle;
+    if (errorTextEl) errorTextEl.textContent = strings.viewer.errorText;
+    if (retryBtnEl) retryBtnEl.textContent = strings.viewer.retry;
+    if (gateTitleEl) gateTitleEl.textContent = strings.viewer.gateTitle;
+    if (gateTextEl) gateTextEl.textContent = strings.viewer.gateText;
+    if (gateBtnEl) gateBtnEl.textContent = strings.viewer.gateButton;
+  }
+
   function setLoader(show, pct = null) {
     if (!loaderEl) return;
     loaderEl.classList.toggle("show", show);
@@ -137,21 +159,68 @@ export function createAtlasViewer(
     });
   }
 
-  function maybePrefetchOthers() {
-    if (prefetched || isMobileGpuTarget()) return;
-    const conn = navigator.connection;
-    if (conn) {
-      if (conn.saveData) return;
-      if (conn.effectiveType && ["slow-2g", "2g", "3g"].includes(conn.effectiveType)) {
-        return;
-      }
-    }
+  function schedulePrefetchNext() {
+    if (prefetched || !canPrefetchNext() || specimens.length < 2) return;
+    const nextSpec = specimens[(activeIndex + 1) % specimens.length];
+    if (!nextSpec || nextSpec.id === specimens[activeIndex].id) return;
     prefetched = true;
-    for (let i = 0; i < specimens.length; i++) {
-      if (i !== activeIndex) {
-        fetch(modelUrl(specimens[i]), { priority: "low" }).catch(() => {});
+
+    const triggerFetch = () => {
+      if (destroyed || contextLost || !canPrefetchNext()) return;
+      prefetchAbort = new AbortController();
+      fetch(modelUrl(nextSpec), {
+        priority: "low",
+        signal: prefetchAbort.signal,
+      }).catch(() => {});
+    };
+
+    prefetchTimer = window.setTimeout(() => {
+      prefetchTimer = 0;
+      if (destroyed) return;
+      if (typeof window.requestIdleCallback === "function") {
+        prefetchIdleId = window.requestIdleCallback(triggerFetch, { timeout: PREFETCH_DELAY_MS });
+      } else {
+        triggerFetch();
       }
+    }, PREFETCH_DELAY_MS);
+  }
+
+  async function startRigLoad(rig, seq, targetIdx, { isBoot = false, isRetry = false } = {}) {
+    stageEl.classList.remove("failed", "gated");
+    setLoader(true, null);
+
+    const onProg = (pct) => {
+      if (seq === selectSeq && !destroyed) setLoader(true, pct);
+    };
+
+    const result = isRetry
+      ? await rigLoader.retryRig(rig, onProg)
+      : await rigLoader.loadRig(rig, onProg);
+
+    if (seq !== selectSeq || destroyed || contextLost) return;
+
+    setLoader(false);
+    stageEl.classList.remove("switching");
+
+    if (result.failed) {
+      syncPanelText();
+      stageEl.classList.add("failed");
+    } else {
+      rig.spin.quaternion.copy(rig.home);
+      rig.pivot.visible = true;
+      const dur = reducedMotion() ? 1 : DUR;
+      if (isBoot || !anim) {
+        anim = { from: -1, to: targetIdx, dir: 1, t0: performance.now(), t1: performance.now(), dur };
+      } else {
+        anim.to = targetIdx;
+        anim.t1 = performance.now();
+      }
+      schedulePrefetchNext();
     }
+  }
+
+  function shouldGateRig(rig) {
+    return isDeviceGated() && !rig.loaded && !rig.consented;
   }
 
   async function select(nextIdxOrId) {
@@ -169,51 +238,71 @@ export function createAtlasViewer(
 
     updateTabAttributes(targetIdx);
     onSelectSpecimen?.(specimens[targetIdx].id);
-
     infoPainter.paint(specimens[targetIdx], volume, strings, locale, { instant: false });
 
-    if (!sceneCtx || !rigLoader) {
+    if (!sceneCtx || !rigLoader || contextLost) {
       setLoader(false);
-      stageEl.classList.remove("switching");
+      stageEl.classList.remove("switching", "gated");
+      syncPanelText();
       stageEl.classList.add("failed");
       return;
     }
 
-    stageEl.classList.add("switching");
-    stageEl.classList.remove("failed");
     controls.clearMotion();
     controls.setZoom(1);
 
+    const nextRig = rigs[targetIdx];
     const dur = reducedMotion() ? 1 : DUR;
     const now = performance.now();
+
+    if (shouldGateRig(nextRig)) {
+      if (rigs[fromIdx]) {
+        rigs[fromIdx].pivot.visible = false;
+      }
+      anim = null;
+      setLoader(false);
+      stageEl.classList.remove("switching", "failed");
+      syncPanelText();
+      stageEl.classList.add("gated");
+      return;
+    }
+
+    stageEl.classList.add("switching");
+    stageEl.classList.remove("failed", "gated");
     anim = { from: fromIdx, to: -1, dir, t0: now, t1: now, dur };
 
-    const nextRig = rigs[targetIdx];
-    if (!nextRig.loaded && !nextRig.failed) {
-      setLoader(true, null);
-    }
-
-    await rigLoader.loadRig(nextRig, (pct) => {
-      if (seq === selectSeq && !destroyed) setLoader(true, pct);
-    });
-
-    if (seq !== selectSeq || destroyed) return;
-
-    setLoader(false);
-    stageEl.classList.remove("switching");
-
-    if (nextRig.failed) {
-      stageEl.classList.add("failed");
-    } else {
-      nextRig.spin.quaternion.copy(nextRig.home);
-      nextRig.pivot.visible = true;
-      anim.to = targetIdx;
-      anim.t1 = performance.now();
-    }
+    await startRigLoad(nextRig, seq, targetIdx, { isBoot: false });
   }
 
-  // Boot: paint info immediately, measure, start loop, load active model in parallel
+  async function retry() {
+    if (destroyed) return;
+    if (!sceneCtx || !rigLoader || contextLost) {
+      onRecreate?.();
+      return;
+    }
+    const rig = rigs[activeIndex];
+    if (!rig) return;
+    rig.consented = true;
+    const seq = ++selectSeq;
+    await startRigLoad(rig, seq, activeIndex, { isBoot: true, isRetry: true });
+  }
+
+  async function loadGated() {
+    if (destroyed) return;
+    if (!sceneCtx || !rigLoader || contextLost) {
+      onRecreate?.();
+      return;
+    }
+    const rig = rigs[activeIndex];
+    if (!rig) return;
+    rig.consented = true;
+    const seq = ++selectSeq;
+    await startRigLoad(rig, seq, activeIndex, { isBoot: true });
+  }
+
+  // Boot: paint info immediately, measure, start loop, load active model (unless gated)
   infoPainter.paint(specimens[activeIndex], volume, strings, locale, { instant: true });
+  syncPanelText();
   updateTabAttributes(activeIndex);
   controls.updateFocusLabels(isFocus);
   controls.updateLightLabels(light);
@@ -222,30 +311,21 @@ export function createAtlasViewer(
   const bootRig = rigs[activeIndex];
   if (!sceneCtx || !rigLoader || !bootRig) {
     setLoader(false);
+    stageEl.classList.remove("gated");
     stageEl.classList.add("failed");
+  } else if (shouldGateRig(bootRig)) {
+    setLoader(false);
+    stageEl.classList.remove("failed");
+    stageEl.classList.add("gated");
   } else {
-    setLoader(true, null);
-    rigLoader
-      .loadRig(bootRig, (pct) => {
-        if (!destroyed && !bootRig.loaded) setLoader(true, pct);
-      })
-      .then(() => {
-        if (destroyed) return;
-        setLoader(false);
-        if (bootRig.failed) {
-          stageEl.classList.add("failed");
-        } else {
-          bootRig.spin.quaternion.copy(bootRig.home);
-          bootRig.pivot.visible = true;
-          const dur = reducedMotion() ? 1 : DUR;
-          anim = { from: -1, to: activeIndex, dir: 1, t0: performance.now(), t1: performance.now(), dur };
-          maybePrefetchOthers();
-        }
-      });
+    startRigLoad(bootRig, selectSeq, activeIndex, { isBoot: true });
   }
 
   function renderFrame(now) {
-    if (destroyed) return;
+    if (destroyed || contextLost || !sceneCtx) {
+      rafId = 0;
+      return;
+    }
     if (document.hidden) {
       rafId = 0;
       return;
@@ -316,7 +396,7 @@ export function createAtlasViewer(
   }
 
   function startLoop() {
-    if (!sceneCtx) return;
+    if (!sceneCtx || contextLost) return;
     if (!rafId && !destroyed && !document.hidden) {
       prevNow = performance.now();
       rafId = requestAnimationFrame(renderFrame);
@@ -324,6 +404,26 @@ export function createAtlasViewer(
   }
 
   startLoop();
+
+  const onContextLost = (e) => {
+    e.preventDefault();
+    contextLost = true;
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = 0;
+    }
+    setLoader(false);
+    stageEl.classList.remove("switching", "gated");
+    syncPanelText();
+    stageEl.classList.add("failed");
+  };
+
+  const onContextRestored = () => {
+    onRecreate?.();
+  };
+
+  canvas.addEventListener("webglcontextlost", onContextLost);
+  canvas.addEventListener("webglcontextrestored", onContextRestored);
 
   const ro = new ResizeObserver(() => {
     if (destroyed) return;
@@ -361,6 +461,7 @@ export function createAtlasViewer(
     locale = nextLocale;
     strings = nextStrings;
     infoPainter.paint(specimens[activeIndex], volume, strings, locale, { instant: true });
+    syncPanelText();
     controls.updateFocusLabels(isFocus);
     controls.updateLightLabels(light);
     search.refresh();
@@ -376,6 +477,13 @@ export function createAtlasViewer(
   function destroy() {
     destroyed = true;
     if (rafId) cancelAnimationFrame(rafId);
+    if (prefetchTimer) clearTimeout(prefetchTimer);
+    if (prefetchIdleId && typeof window.cancelIdleCallback === "function") {
+      window.cancelIdleCallback(prefetchIdleId);
+    }
+    prefetchAbort?.abort();
+    canvas.removeEventListener("webglcontextlost", onContextLost);
+    canvas.removeEventListener("webglcontextrestored", onContextRestored);
     ro.disconnect();
     dprMedia?.removeEventListener?.("change", onDprChange);
     window.removeEventListener("orientationchange", onOrientation);
@@ -397,5 +505,7 @@ export function createAtlasViewer(
     setLocale,
     select,
     setLight,
+    retry,
+    loadGated,
   };
 }

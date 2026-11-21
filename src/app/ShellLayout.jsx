@@ -21,7 +21,7 @@ export function ShellLayout({ children, onOpenMenu, menuButtonRef, accentColor =
         {strings.nav.skip}
       </a>
       <SiteBar onOpenMenu={onOpenMenu} menuButtonRef={menuButtonRef} />
-      <main id="main" className="page-main">
+      <main id="main" className="page-main" tabIndex={-1}>
         {children}
       </main>
       <BigFooter />

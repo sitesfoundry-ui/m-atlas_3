@@ -13,61 +13,71 @@ export function createViewerScene(canvas, initialLight = "day") {
     antialias: true,
     powerPreference: "high-performance",
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.NeutralToneMapping;
 
-  const preset = LIGHT_PRESETS[initialLight] || LIGHT_PRESETS.day;
-  renderer.toneMappingExposure = preset.exposure;
-
-  const scene = new THREE.Scene();
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const envTarget = pmrem.fromScene(new RoomEnvironment(), 0.04);
-  scene.environment = envTarget.texture;
-  scene.environmentIntensity = preset.env;
-  pmrem.dispose();
-
-  const camera = new THREE.PerspectiveCamera(26, 1, 0.1, 100);
-
-  const keyLight = new THREE.DirectionalLight(preset.keyColor.clone(), preset.key);
-  keyLight.position.set(2.5, 4, 5);
-  scene.add(keyLight);
-
-  const rimLight = new THREE.DirectionalLight(0xbfd8ff, preset.rim);
-  rimLight.position.set(-4, 2, -3);
-  scene.add(rimLight);
-
-  let lightGoal = LIGHT_PRESETS[initialLight] || LIGHT_PRESETS.day;
-
-  function setLightPreset(mode) {
-    lightGoal = LIGHT_PRESETS[mode] || LIGHT_PRESETS.day;
-  }
-
-  function updateLights(f) {
-    scene.environmentIntensity += (lightGoal.env - scene.environmentIntensity) * f;
-    keyLight.intensity += (lightGoal.key - keyLight.intensity) * f;
-    rimLight.intensity += (lightGoal.rim - rimLight.intensity) * f;
-    keyLight.color.lerp(lightGoal.keyColor, f);
-    renderer.toneMappingExposure += (lightGoal.exposure - renderer.toneMappingExposure) * f;
-  }
-
-  function refreshPixelRatio() {
+  let envTarget = null;
+  try {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  }
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.NeutralToneMapping;
 
-  function dispose() {
-    envTarget.dispose();
+    const preset = LIGHT_PRESETS[initialLight] || LIGHT_PRESETS.day;
+    renderer.toneMappingExposure = preset.exposure;
+
+    const scene = new THREE.Scene();
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    try {
+      envTarget = pmrem.fromScene(new RoomEnvironment(), 0.04);
+    } finally {
+      pmrem.dispose();
+    }
+    scene.environment = envTarget.texture;
+    scene.environmentIntensity = preset.env;
+
+    const camera = new THREE.PerspectiveCamera(26, 1, 0.1, 100);
+
+    const keyLight = new THREE.DirectionalLight(preset.keyColor.clone(), preset.key);
+    keyLight.position.set(2.5, 4, 5);
+    scene.add(keyLight);
+
+    const rimLight = new THREE.DirectionalLight(0xbfd8ff, preset.rim);
+    rimLight.position.set(-4, 2, -3);
+    scene.add(rimLight);
+
+    let lightGoal = LIGHT_PRESETS[initialLight] || LIGHT_PRESETS.day;
+
+    function setLightPreset(mode) {
+      lightGoal = LIGHT_PRESETS[mode] || LIGHT_PRESETS.day;
+    }
+
+    function updateLights(f) {
+      scene.environmentIntensity += (lightGoal.env - scene.environmentIntensity) * f;
+      keyLight.intensity += (lightGoal.key - keyLight.intensity) * f;
+      rimLight.intensity += (lightGoal.rim - rimLight.intensity) * f;
+      keyLight.color.lerp(lightGoal.keyColor, f);
+      renderer.toneMappingExposure += (lightGoal.exposure - renderer.toneMappingExposure) * f;
+    }
+
+    function refreshPixelRatio() {
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    }
+
+    function dispose() {
+      envTarget?.dispose();
+      renderer.dispose();
+    }
+
+    return {
+      renderer,
+      scene,
+      camera,
+      setLightPreset,
+      updateLights,
+      refreshPixelRatio,
+      dispose,
+    };
+  } catch (error) {
+    envTarget?.dispose();
     renderer.dispose();
-    renderer.forceContextLoss();
+    throw error;
   }
-
-  return {
-    renderer,
-    scene,
-    camera,
-    setLightPreset,
-    updateLights,
-    refreshPixelRatio,
-    dispose,
-  };
 }
